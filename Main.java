@@ -8,38 +8,45 @@ class Main extends JFrame {
 
 	Main() { }
 
+	public static void newPanel(JFrame myFrame, JPanel panel) {
+
+		myFrame.getContentPane().removeAll();
+		myFrame.repaint();
+
+		myFrame.add(panel);
+
+		myFrame.revalidate();
+
+		}
+
 	public static void main(String[] args) {
 
-		Home homePanel = new Home();
-		homePanel.compile();
+		// Making components of the Home Panel
 
-		frame.add(homePanel.panel);
-		//Alarm alarmPanel = new Alarm();
+		JPanel homePanel = new JPanel();
+		JButton AlarmBtn = new JButton("Alarm");
 
-		homePanel.addBtn.addActionListener(new ActionListener() {
+		// Defining button actions to navigate to other panels
+
+		AlarmBtn.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 
-				System.out.println("Pressed");
-
-				frame.getContentPane().removeAll();
-				frame.repaint();
-
-				//frame.remove(homePanel.panel);
-				
 				Alarm alarmPanel = new Alarm();
 				alarmPanel.compile();
 
-				frame.add(alarmPanel.panel);
-
+				newPanel(frame, alarmPanel.panel);
 				}
 			});
 
+		// Adding Home Panel components to the main frame
 
-		//frame.add(alarmPanel.panel);
+		frame.add(homePanel);
+		frame.add(AlarmBtn);
 
+		// Frame layout
 		frame.setSize(300,400);
-
+		frame.setLayout(new FlowLayout());
 		frame.setVisible(true);
 
 		}
