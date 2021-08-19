@@ -150,7 +150,7 @@ class Watcher:
 
 	RESIZE_WIDTH = 20
 	RESIZE_HEIGHT = 20
-	LIGHT_THRESH = 50 # OF the 20x20 pixels how many must be bright it to trigger
+	LIGHT_THRESH =  1 #30000 for unresized
 
 	def __init__(self, capture):
 		self.capture = capture
@@ -159,12 +159,16 @@ class Watcher:
 
 		ret, frame = self.capture.read()
 
+		#cv2.imshow("frame", frame)
+
 		dr = (Watcher.RESIZE_WIDTH, Watcher.RESIZE_HEIGHT)
-		cv2.resize(frame, dr)
+		frame = cv2.resize(frame, dr)
 
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		blurred = cv2.GaussianBlur(gray, (7,7), 0)
-		T, blurred_gray_threshInv = cv2.threshold(gray, 200, 255, cv2.THRESH_BINARY_INV)
+		T, blurred_gray_threshInv = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY_INV)
+
+		#cv2.imshow("bw", blurred_gray_threshInv)
 
 		return ret, blurred_gray_threshInv
 
@@ -176,11 +180,12 @@ class Watcher:
 		for r in range(len(frame)): # For every row
 			for p in range(len(frame[r])): # For every pixel in that row
 
+				grey_scale = frame[r][p]
 
-				r, g, b = frame[r][p]
-
-				if r > 0 and g > 0 and b > 0:
+				if grey_scale == 0: # is black
 					count += 1
+
+		print(count)
 
 		if count >= Watcher.LIGHT_THRESH:
 			is_awake = True
@@ -221,4 +226,6 @@ class SleepManager:
 		elif comp == "equal":
 			response = "Wake up"
 
+		print(f"CurrentTime: {datetime.now()}")
+		print(f"Wakeup At: {self.wake_up}")
 		return response
